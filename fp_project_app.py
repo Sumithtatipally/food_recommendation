@@ -16,8 +16,6 @@ warnings.filterwarnings('ignore')
 import streamlit.components.v1 as components
 
 
-from st_aggrid import AgGrid, GridUpdateMode
-from st_aggrid.grid_options_builder import GridOptionsBuilder
 
 # from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
