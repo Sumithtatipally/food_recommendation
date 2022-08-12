@@ -98,6 +98,7 @@ pytz-deprecation-shim==0.1.0.post0
 PyWavelets==1.1.1
 PyYAML==6.0
 pyzmq==23.2.0
+psycopg2-binary==2.9.3
 regex==2022.7.9
 requests==2.27.1
 rfc3986==1.5.0
