@@ -202,7 +202,7 @@ def add_data_recomm(weight, user_satisfaction, status,  height, gender, food_rec
 if st.button('Recommend Food 😋',):
 	new_description = pd.Series(input_desc)
 	outt = get_recommendations(new_description,descriptions1)
-	outtt = outt[["Food_Name", "Calories","Carbohydrates","Protien","Fats","Course","Cuisine","Meal_Type"]]
+	outtt = outt[["Food_Name", "Calories","Carbohydrates","Protien","Fats","Course","Meal_Type"]]
 
 
 	st.write(outtt)
