@@ -16,7 +16,6 @@ warnings.filterwarnings('ignore')
 import streamlit.components.v1 as components
 
 
-
 # from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
 
 import psycopg2
@@ -35,6 +34,7 @@ cursor = conn.cursor()
 
 st.title('The **Belly** rules the mind 😄')
 
+st.subheader('Based on your inputs the daily ideal calories should be')
 
 
 
@@ -108,51 +108,127 @@ course_selectbox = st.sidebar.selectbox(
 
 cuisine_selectbox = st.sidebar.multiselect(
 	     'Select Cuisine',
-	     ["North Indian", "South Indian", "Asian", "Mexican", "Italian", "Others"],
+	     ["North Indian", "South Indian", "Asian", "Mexican", "Italian","Continental", "Others"],
 	     default=["North Indian"])
-# def main():
 
-#   pass
-
-
-# def get_calories_macros():
-
-obj = MakeMeal(weight, goal=add_selectbox, activity_level='moderate',
-               body_type='mesomorph')
-  
-# Call required method
-# print(obj.daily_requirements())
-
-#calories
-max_cal = obj.daily_max_calories()
-min_cal = obj.daily_min_calories()
-avg_cal = (max_cal + min_cal)/2
+lifestyle_selectbox = st.sidebar.selectbox(
+	     'Select Lifestyle',
+	     ["Sedentary", "Moderately Active ", "Active"]
+	    )
 
 
-max_pro = obj.daily_max_protein()
-min_pro = obj.daily_min_protein()
-avg_pro = (max_pro + min_pro)/2
+
+BMI = 0
+BMI = weight/height**2
 
 
-max_fat = obj.daily_max_fat()
-min_fat = obj.daily_min_fat()
-avg_fat = (max_fat + min_fat)/2
+calories = 0
+if gender == 'Female':
+    weight = float(weight)
+    height = float(height)
+    age = float(age)
+    bmr = 655 + (9.6*weight) + (1.8*height) - (4.7*age)
+    if lifestyle_selectbox == 'Sedentary':
+        tdee = bmr*1.2
+        if add_selectbox == 'weight_loss':
+            if BMI >= 30:
+                calories = tdee*0.72
+            elif BMI > 25 and BMI <= 29.9:
+                calories = tdee*0.77
+            else:
+                calories = tdee*0.8
+        elif add_selectbox == 'maintain_weight':
+            calories = tdee+220
+        else:
+            calories = tdee
+    elif lifestyle_selectbox == 'Moderately Active':
+        tdee = bmr*1.5
+        if add_selectbox == 'weight_loss':
+            if BMI >= 30:
+                calories = tdee*0.72
+            elif BMI > 25 and BMI <= 29.9:
+                calories = tdee*0.77
+            else:
+                calories = tdee*0.8
+        elif add_selectbox == 'maintain_weight':
+            calories = tdee+220
+        else:
+            calories = tdee
+    else:
+        tdee = bmr*1.8
+        if add_selectbox == 'weight_loss':
+            if BMI >= 30:
+                calories = tdee*0.72
+            elif BMI > 25 and BMI <= 29.9:
+                calories = tdee*0.77
+            else:
+                calories = tdee*0.8
+        elif add_selectbox == 'maintain_weight':
+            calories = tdee+220
+        else:
+            calories = tdee
+else:
+    weight = float(weight)
+    height = float(height)
+    age = float(age)
+    bmr = 66 + (13.7*weight) + (5*height) - (6.8*age)
+    if lifestyle_selectbox == 'Sedentary':
+        tdee = bmr*1.2
+        if add_selectbox == 'weight_loss':
+            if BMI >= 30:
+                calories = tdee*0.72
+            elif BMI > 25 and BMI <= 29.9:
+                calories = tdee*0.77
+            else:
+                calories = tdee*0.8
+        elif add_selectbox == 'maintain_weight':
+            calories = tdee+220
+        else:
+            calories = tdee
+    elif lifestyle_selectbox == 'Moderately Active':
+        tdee = bmr*1.5
+        if add_selectbox == 'weight_loss':
+            if BMI >= 30:
+                calories = tdee*0.72
+            elif BMI > 25 and BMI <= 29.9:
+                calories = tdee*0.77
+            else:
+                calories = tdee*0.8
+        elif add_selectbox == 'maintain_weight':
+            calories = tdee+220
+        else:
+            calories = tdee
+    else:
+        tdee = bmr*1.8
+        if add_selectbox == 'weight_loss':
+            if BMI >= 30:
+                calories = tdee*0.72
+            elif BMI > 25 and BMI <= 29.9:
+                calories = tdee*0.77
+            else:
+                calories = tdee*0.8
+        elif add_selectbox == 'maintain_weight':
+            calories = tdee+220
+        else:
+            calories = tdee
 
 
-max_carb = obj.daily_max_carbs()
-min_carb = obj.daily_min_carbs()
-avg_carb = (max_carb + min_carb)/2
 
-	# return max_cal, max_pro, max_carb, max_fat, 
+print(int(calories))
+
+calories = int(calories)
+pro = int(calories*0.3)
+fat = int(calories*0.2)
+carbs = int(calories*0.5)
+
+print(pro, fat, carbs)
 
 
-# st.metric("Calories",avg_cal, 'kCal')
-
-pro1, carb2, fat3, kcal = st.columns(4)
-kcal.metric("Calories",max_cal, 'kCal')
-pro1.metric("Protien", max_pro, "10%")
-carb2.metric("Carbs", max_carb, "-8%")
-fat3.metric("Fats", max_fat, "4%")
+calori,pr, car, fa  = st.columns(4)
+calori.metric("Calories",calories, 'kCal')
+pr.metric("Protien", pro, "gm")
+car.metric("Carbs", carbs, "gm")
+fa.metric("Fats", fat, "gm")
 
 # pro11, carb21, fat31, kcal1 = st.columns(4)
 # kcal.metric("Remaining Calories",avg_cal, 'kCal')
@@ -165,12 +241,16 @@ food_ind = pd.read_csv('indian.csv')
 
 
 # food_ind_u = pd.read_csv('Food_Edited.csv')
-food_ind_u = pd.read_csv('Food_final.csv')
+# food_ind_u = pd.read_csv('Food_final.csv')
+sql_query = pd.read_sql_query ('''
+                               SELECT * FROM food_data_csv
+                               ''', conn)
 
+food_ind_u = pd.DataFrame(sql_query)
 #food preference veg/non-veg
 
 if add_radio == 'Vegetarian':
-	df_food_v = food_ind_u[food_ind_u['Meal_Type'] == 'Vegetarian']
+	df_food_v = food_ind_u[food_ind_u['meal_type'] == 'Vegetarian']
 else:
 	df_food_v = food_ind_u
 
@@ -178,18 +258,18 @@ else:
 #course selection
 
 if course_selectbox == "Breakfast":
-	df_food_v1 = df_food_v[df_food_v['Course'] == 'Breakfast']
-	descriptions1 = df_food_v1['Calories'].apply(str) + ' ' + df_food_v1['Fats'].apply(str) + ' ' + df_food_v1['Protien'].apply(str) + ' ' + df_food_v1['Carbohydrates'].apply(str) + ' ' +df_food_v1['Meal_Type'] 
+	df_food_v1 = df_food_v[df_food_v['course'] == 'Breakfast']
+	descriptions1 = df_food_v1['calories'].apply(str) + ' ' + df_food_v1['fats'].apply(str) + ' ' + df_food_v1['protien'].apply(str) + ' ' + df_food_v1['carbohydrates'].apply(str) + ' ' +df_food_v1['meal_type'] 
 
 else:
-	df_food_v1 = df_food_v[df_food_v['Course'] == 'Meal']
-	descriptions1 = df_food_v1['Calories'].apply(str) + ' ' + df_food_v1['Fats'].apply(str) + ' ' + df_food_v1['Protien'].apply(str) + ' ' + df_food_v1['Carbohydrates'].apply(str) + ' ' +df_food_v1['Meal_Type'] 
+	df_food_v1 = df_food_v[df_food_v['course'] == 'Meal']
+	descriptions1 = df_food_v1['calories'].apply(str) + ' ' + df_food_v1['fats'].apply(str) + ' ' + df_food_v1['protien'].apply(str) + ' ' + df_food_v1['carbohydrates'].apply(str) + ' ' +df_food_v1['meal_type'] 
 
 
 
 # st.subheader("LAPPS Recommended food")
 
-input_desc = str(avg_cal/2) +' ' + str(avg_fat/2) + ' ' + str(avg_pro/2) + ' ' + str(avg_carb/2) + ' ' + str(add_radio) 
+input_desc = str(calories) +' ' + str(fat) + ' ' + str(pro) + ' ' + str(carbs) + ' ' + str(add_radio) 
 
 
 def add_data_recomm(weight, user_satisfaction, status,  height, gender, food_recom_id, food_pref, fitness_goal, cuisine, course, age, created_date, food_ids):
@@ -199,10 +279,12 @@ def add_data_recomm(weight, user_satisfaction, status,  height, gender, food_rec
 
 
 
+
+
 if st.button('Recommend Food 😋',):
 	new_description = pd.Series(input_desc)
 	outt = get_recommendations(new_description,descriptions1)
-	outtt = outt[["Food_Name", "Calories","Carbohydrates","Protien","Fats","Course","Meal_Type"]]
+	outtt = outt[["food_name", "calories","carbohydrates","protien","fats","course","cuisine","meal_type"]]
 
 
 	st.write(outtt)
@@ -211,7 +293,7 @@ if st.button('Recommend Food 😋',):
 
 
 
-	food_ids = outtt['Food_Name'].tolist()
+	food_ids = outtt['food_name'].tolist()
 	now = datetime.now()
 
 	# print("now =", now)
@@ -221,20 +303,40 @@ if st.button('Recommend Food 😋',):
 	# print("date and time =", dt_string)	
 	food_recom_id = 111
 	status = 1
-	with col1:
-		st.button("Happy 😊")
+
+	def run_query_yes():
 		user_satisfaction = 'yes'
-		postgres_insert_query = """ INSERT INTO user_data (weight, user_satisfaction, status,  height, gender, food_recom_id, food_pref, fitness_goal, cuisine, course, age, created_date, food_ids, email) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-		record_to_insert = (weight, user_satisfaction, status,  height, gender, food_recom_id, add_radio, add_selectbox, cuisine_selectbox, course_selectbox, age, dt_string, food_ids, your_email)
+		postgres_insert_query = """ INSERT INTO user_data (weight, user_satisfaction, status,  height, gender, food_recom_id, food_pref, fitness_goal, cuisine, course, age, created_date, food_ids, email, lifestyle) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+		record_to_insert = (weight, user_satisfaction, status,  height, gender, food_recom_id, add_radio, add_selectbox, cuisine_selectbox, course_selectbox, age, dt_string, food_ids, your_email, lifestyle_selectbox)
 		cursor.execute(postgres_insert_query, record_to_insert)
 		conn.commit()
-		# add_data_recomm( weight, user_satisfaction, status,  height, gender, food_recom_id, add_radio, add_selectbox, cuisine_selectbox, course_selectbox, age, dt_string, food_ids)
-		# st.success("Feedback submitted")
+		conn.close()
+		st.success('Thanks for Feedback.')
+		return()
+
+
+	def run_query_no():
+		user_satisfaction = 'no'
+		postgres_insert_query = """ INSERT INTO user_data (weight, user_satisfaction, status,  height, gender, food_recom_id, food_pref, fitness_goal, cuisine, course, age, created_date, food_ids, email, lifestyle) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+		record_to_insert = (weight, user_satisfaction, status,  height, gender, food_recom_id, add_radio, add_selectbox, cuisine_selectbox, course_selectbox, age, dt_string, food_ids, your_email, lifestyle_selectbox)
+		cursor.execute(postgres_insert_query, record_to_insert)
+		conn.commit()
+		conn.close()
+		st.success('Thanks for Feedback.')
+		return()
+
+
+	with col1:
+			# st.button("Happy 😊")
+		if st.button("Happy 😊",on_click = run_query_yes):
+			run_query_yes()
+		
 	with col2:
-		if st.button("Sad 🙁"):
-			user_satisfaction = 'no'
-			postgres_insert_query = """ INSERT INTO user_data (weight, user_satisfaction, status,  height, gender, food_recom_id, food_pref, fitness_goal, cuisine, course, age, created_date, food_ids, email) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-			record_to_insert = (weight, user_satisfaction, status,  height, gender, food_recom_id, add_radio, add_selectbox, cuisine_selectbox, course_selectbox, age, dt_string, food_ids,your_email)
-			cursor.execute(postgres_insert_query, record_to_insert)
-			conn.commit()
+		if st.button("Sad 🙁",on_click = run_query_no):
+			run_query_no()
+
+
+
+
+
 
