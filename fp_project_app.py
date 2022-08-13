@@ -223,12 +223,24 @@ carbs = int(calories*0.5)
 
 print(pro, fat, carbs)
 
+Proteingm= 0.8*(weight)
+Proteincal = Proteingm*4
+Fatgm = 0.3*(weight*2.2)
+Fatcal = Fatgm*9
+Carbscal = calories - Proteincal - Fatcal
+Carbsgm = Carbscal/4
 
 calori,pr, car, fa  = st.columns(4)
 calori.metric("Calories",calories, 'kCal')
-pr.metric("Protien", pro, "gm")
-car.metric("Carbs", carbs, "gm")
-fa.metric("Fats", fat, "gm")
+pr.metric("Protien", int(Proteingm), "gm")
+car.metric("Carbs", int(Carbsgm), "gm")
+fa.metric("Fats", int(Fatgm), "gm")
+
+# calori,pr, car, fa  = st.columns(4)
+# calori.metric("Calories",calories, 'kCal')
+# pr.metric("Protien", pro, "gm")
+# car.metric("Carbs", carbs, "gm")
+# fa.metric("Fats", fat, "gm")
 
 # pro11, carb21, fat31, kcal1 = st.columns(4)
 # kcal.metric("Remaining Calories",avg_cal, 'kCal')
